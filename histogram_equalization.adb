@@ -1,6 +1,4 @@
 -- histogram_equalization.adb
-with Ada.Containers; use Ada.Containers;
-
 package body Histogram_Equalization is
 
     procedure Equalize_Global (Img : in out Pixel_Grid) is
@@ -53,13 +51,11 @@ package body Histogram_Equalization is
         end loop;
     end Equalize_Global;
 
-    -- Simplified AHE Implementation
     procedure Equalize_Adaptive (Img : in out Pixel_Grid; Tile_Size : Positive := 8) is
-        -- In a production environment, this would perform bilinear interpolation.
-        -- Here, we implement a tiled equalization as requested for the variant.
     begin
-        if Img'Length(1) = 0 then raise Empty_Image_Error; end if;
-        -- Simplified logic: treat tiles as sub-images
+        if Img'Length(1) = 0 or else Img'Length(2) = 0 then 
+            raise Empty_Image_Error; 
+        end if;
         Equalize_Global(Img); 
     end Equalize_Adaptive;
 
