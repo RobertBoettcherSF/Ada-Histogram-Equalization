@@ -4,7 +4,7 @@ package Histogram_Equalization is
     -- Define Intensity as 8-bit unsigned
     type Intensity is range 0 .. 255;
     
-    -- Pixel grid definition
+    -- Pixel grid definition (multidimensional array)
     type Pixel_Grid is array (Integer range <>, Integer range <>) of Intensity;
     
     -- Exception for invalid operations
