@@ -13,9 +13,9 @@ procedure Tests is
         end if;
     end Run_Test;
 
-    -- Data setup using safe multidimensional aggregate syntax
-    Small_Img : Pixel_Grid(1..1, 1..1) := (others => 10);
-    Uniform_Img : Pixel_Grid(1..2, 1..2) := (others => 50);
+    -- Data setup using correct nested array aggregate syntax for 2D arrays
+    Small_Img : Pixel_Grid(1..1, 1..1) := (others => (others => 10));
+    Uniform_Img : Pixel_Grid(1..2, 1..2) := (others => (others => 50));
 begin
     Put_Line("--- STARTING HISTOGRAM EQUALIZATION TESTS ---");
 
@@ -45,7 +45,7 @@ begin
 
     -- TEST 6: Adaptive Variant Execution
     declare
-        Img : Pixel_Grid(1..2, 1..2) := (others => 25);
+        Img : Pixel_Grid(1..2, 1..2) := (others => (others => 25));
     begin
         Equalize_Adaptive(Img, 2);
         Run_Test("Test 6: Adaptive Variant (Run)", True, "Execution finished without crash");
@@ -57,7 +57,7 @@ begin
 
     -- TEST 8: Input Mutation Check
     declare
-        Original : Pixel_Grid(1..1, 1..1) := (others => 10);
+        Original : Pixel_Grid(1..1, 1..1) := (others => (others => 10));
     begin
         Equalize_Global(Original);
         Run_Test("Test 8: Mutation check", Original(1,1) /= 10, "Image data was updated");
@@ -83,7 +83,7 @@ begin
 
     -- TEST 12: Adaptive Tile Size Logic
     declare
-        Img : Pixel_Grid(1..2, 1..2) := (others => 5);
+        Img : Pixel_Grid(1..2, 1..2) := (others => (others => 5));
     begin
         Equalize_Adaptive(Img, 1);
         Run_Test("Test 12: Adaptive Tile Valid", True, "Small tile size supported");
