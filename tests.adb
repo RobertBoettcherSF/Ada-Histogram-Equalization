@@ -13,9 +13,9 @@ procedure Tests is
         end if;
     end Run_Test;
 
-    -- Data setup
-    Small_Img : Pixel_Grid(1..1, 1..1) := ((10,));
-    Uniform_Img : Pixel_Grid(1..2, 1..2) := ((50, 50), (50, 50));
+    -- Data setup using safe multidimensional aggregate syntax
+    Small_Img : Pixel_Grid(1..1, 1..1) := (others => 10);
+    Uniform_Img : Pixel_Grid(1..2, 1..2) := (others => 50);
 begin
     Put_Line("--- STARTING HISTOGRAM EQUALIZATION TESTS ---");
 
@@ -45,7 +45,7 @@ begin
 
     -- TEST 6: Adaptive Variant Execution
     declare
-        Img : Pixel_Grid(1..2, 1..2) := ((10, 20), (30, 40));
+        Img : Pixel_Grid(1..2, 1..2) := (others => 25);
     begin
         Equalize_Adaptive(Img, 2);
         Run_Test("Test 6: Adaptive Variant (Run)", True, "Execution finished without crash");
@@ -57,7 +57,7 @@ begin
 
     -- TEST 8: Input Mutation Check
     declare
-        Original : Pixel_Grid(1..1, 1..1) := ((10,));
+        Original : Pixel_Grid(1..1, 1..1) := (others => 10);
     begin
         Equalize_Global(Original);
         Run_Test("Test 8: Mutation check", Original(1,1) /= 10, "Image data was updated");
@@ -65,8 +65,12 @@ begin
 
     -- TEST 9: Contrast Expansion Logic
     declare
-        Img : Pixel_Grid(1..2, 1..2) := ((0, 0), (255, 255));
+        Img : Pixel_Grid(1..2, 1..2);
     begin
+        Img(1, 1) := 0;
+        Img(1, 2) := 0;
+        Img(2, 1) := 255;
+        Img(2, 2) := 255;
         Equalize_Global(Img);
         Run_Test("Test 9: Max Contrast Preservation", Img(1, 1) = 0 and Img(2, 2) = 255, "Extremes preserved");
     end;
@@ -79,7 +83,7 @@ begin
 
     -- TEST 12: Adaptive Tile Size Logic
     declare
-        Img : Pixel_Grid(1..2, 1..2) := ((5,5), (5,5));
+        Img : Pixel_Grid(1..2, 1..2) := (others => 5);
     begin
         Equalize_Adaptive(Img, 1);
         Run_Test("Test 12: Adaptive Tile Valid", True, "Small tile size supported");
