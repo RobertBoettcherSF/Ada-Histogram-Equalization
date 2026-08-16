@@ -43,9 +43,23 @@ package body Histogram_Equalization is
                     V : constant Integer := Integer(Img(R, C));
                     Num : constant Integer := CDF(Intensity(V)) - Min_CDF;
                     Den : constant Integer := N - Min_CDF;
-                    Res : Float := (Float(Num) / Float(Den)) * 255.0;
+                    Res : Float;
                 begin
-                    Img(R, C) := Intensity(Integer(Res));
+                    if Den = 0 then
+                        -- Handle edge case where all pixels have the same intensity
+                        Res := 0.0;
+                    else
+                        Res := (Float(Num) / Float(Den)) * 255.0;
+                    end if;
+                    
+                    -- Ensure floating point result stays within bounds before conversion
+                    if Res < 0.0 then
+                        Img(R, C) := 0;
+                    elsif Res > 255.0 then
+                        Img(R, C) := 255;
+                    else
+                        Img(R, C) := Intensity(Integer(Res));
+                    end if;
                 end;
             end loop;
         end loop;
